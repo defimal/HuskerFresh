@@ -75,10 +75,19 @@ WSGI_APPLICATION = 'djangoProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'neondb',  # database name from Neon
+        'USER': 'neondb_owner',  # your Neon role
+        'PASSWORD': 'npg_RcBKIpD7XJ0q',  # your Neon password
+        'HOST': 'ep-shy-mountain-ahozzm8u-pooler.c-3.us-east-1.aws.neon.tech',  # your Neon host
+        'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',  # required for Neon
+        },
     }
 }
+
+
 
 
 # Password validation
