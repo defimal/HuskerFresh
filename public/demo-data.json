@@ -1,0 +1,48 @@
+{
+  "fed_this_week": 182,
+  "donations_today": 38,
+  "avg_wait_seconds": 360,
+  "halls": [
+    {
+      "id": "nebraska-union",
+      "name": "Nebraska Union",
+      "lat": 40.817189,
+      "lng": -96.700452,
+      "status": "open",
+      "pickup_windows": ["11:30a", "5:30p"],
+      "open_hours": "7a – 9p"
+    },
+    {
+      "id": "abel-sandoz",
+      "name": "Abel/Sandoz",
+      "lat": 40.816164,
+      "lng": -96.685692,
+      "status": "open",
+      "pickup_windows": ["12:00p", "6:00p"],
+      "open_hours": "8a – 10p"
+    },
+    {
+      "id": "selleck",
+      "name": "Selleck",
+      "lat": 40.82052,
+      "lng": -96.703613,
+      "status": "closed",
+      "pickup_windows": ["5:00p", "9:00p"],
+      "open_hours": "Opens 4p"
+    },
+    {
+      "id": "cather",
+      "name": "Cather",
+      "lat": 40.818492,
+      "lng": -96.70551,
+      "status": "open",
+      "pickup_windows": ["8:00a", "1:00p"],
+      "open_hours": "6:30a – 8p"
+    }
+  ],
+  "shoutouts": [
+    "A. donated 1 swipe 🫶",
+    "Roommate funded breakfast 🌅",
+    "Alum covered dessert 🍰"
+  ]
+}

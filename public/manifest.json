@@ -1,0 +1,17 @@
+{
+  "name": "Peel & Feed — Huskers vs. Hunger",
+  "short_name": "Peel & Feed",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#D00000",
+  "description": "Donate unused swipes or request a meal discreetly at UNL.",
+  "icons": [
+    {
+      "src": "assets/logo-n.svg",
+      "sizes": "200x200",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

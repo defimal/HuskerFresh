@@ -1,0 +1,4 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Block N">
+  <rect width="200" height="200" rx="28" fill="#D00000" />
+  <path d="M50 150V50h34l36 48V50h30v100h-34l-36-48v48z" fill="#FFFFFF" />
+</svg>
