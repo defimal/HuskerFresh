@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Add Offer{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Add Offer</h1>
+{% if form.non_field_errors %}
+    <div class="alert alert-danger small">
+        {% for error in form.non_field_errors %}
+            <div>{{ error }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+<form method="post" class="mb-3">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+            {% for error in field.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <button class="btn btn-primary" type="submit">Add Offer</button>
+    <a class="btn btn-link" href="{% url 'offers_list' %}">Back to offers</a>
+</form>
+{% endblock %}

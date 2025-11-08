@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Offers{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Neon Offers</h1>
+    <a class="btn btn-primary" href="{% url 'offers_add' %}">Add Offer</a>
+</div>
+{% if offers %}
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+            <tr>
+                <th>Owner</th>
+                <th>Meal Type</th>
+                <th>Swipes</th>
+                <th>Price (USD)</th>
+                <th>Campus Zone</th>
+                <th>Window</th>
+                <th>Status</th>
+                <th>Notes</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for offer in offers %}
+                <tr>
+                    <td>{{ offer.owner.username }}</td>
+                    <td>{{ offer.meal_type }}</td>
+                    <td>{{ offer.swipes_count }}</td>
+                    <td>${{ offer.price_usd|floatformat:2 }}</td>
+                    <td>{{ offer.campus_zone }}</td>
+                    <td>
+                        {{ offer.start_at|date:"M d, Y H:i" }}
+                        –
+                        {{ offer.end_at|date:"M d, Y H:i" }}
+                    </td>
+                    <td>{{ offer.status }}</td>
+                    <td>{{ offer.notes|default:"—" }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p>No offers found in Neon yet.</p>
+{% endif %}
+{% endblock %}
