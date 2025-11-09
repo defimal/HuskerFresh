@@ -24,4 +24,33 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("mouseover", () => btn.classList.add("wiggle"));
     btn.addEventListener("animationend", () => btn.classList.remove("wiggle"));
   });
+
+  // Confirm donation intent before form submission
+  document.querySelectorAll("[data-donate-form]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      const swipesInput = form.querySelector('input[name="swipes"]');
+      const amount = Number(swipesInput?.value || 1);
+      const requester = form.dataset.requester || "this requester";
+      const plural = amount === 1 ? "swipe" : "swipes";
+      const message = `Donate ${amount} ${plural} to ${requester}?`;
+      if (!window.confirm(message)) {
+        event.preventDefault();
+      }
+    });
+  });
+
+  // Password eye toggle
+  document.querySelectorAll("[data-eye-toggle]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const wrapper = btn.closest(".hf-input-eye-wrapper");
+      const input = wrapper?.querySelector("input");
+      if (!input) {
+        return;
+      }
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      btn.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+      btn.classList.toggle("hf-eye-open", isHidden);
+    });
+  });
 });

@@ -58,7 +58,7 @@ class HelpRequest(models.Model):
     class Meta:
         managed = False
         db_table = 'public"."requests'
-        ordering = ["-created_at"]
+        ordering = ["created_at"]
 
     def __str__(self) -> str:
         return f"{self.requester.username} · {self.need_type}"

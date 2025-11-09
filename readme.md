@@ -1,4 +1,4 @@
-# HuskerFresh
+# SwipeShare
 
 Simple Django app that showcases student help requests backed by Neon Postgres.
 
@@ -45,3 +45,38 @@ Each request row exposes a “Donate 1 Swipe” button. Pressing it issues a sin
 4. Awards the donor 1 `donation_point`, which feeds the leaderboard shown at the bottom of the dashboard.
 
 All three updates run inside `transaction.atomic()` with row-level locks (`SELECT ... FOR UPDATE`) to ensure consistency even if multiple devices donate simultaneously.
+
+## Product guide
+
+### Landing + auth
+
+- Visitors are funneled to the SwipeShare cover login page; every route behind `/requests/` or `/requests/add/` requires an authenticated public user session.
+- The hero exposes demo usernames/passwords pulled straight from `public.users` to keep onboarding frictionless during demos.
+
+### Dashboard experience
+
+- The dashboard surfaces real-time metrics (open vs matched requests, swipes still needed, personal swipe balance) plus filterable request cards and a live leaderboard.
+- Each request card shows campus zone, urgency badge, needed-by timestamp, remaining swipes, and a CTA that respects the donor’s available balance and requester identity.
+- Progress bars and leaderboard rows automatically animate as data changes so donors immediately see their impact.
+- Every donation action triggers a confirmation prompt so swipes are never sent by accident.
+
+### Banana edition theming
+
+- The entire UI now runs on a banana-inspired palette: warm gold gradients, lime accents, and playful banana stamps to differentiate SwipeShare from similar projects.
+- Hero sections and the cover login feature animated banana icons plus updated copy to keep the experience light and memorable.
+
+### Request creation guardrails
+
+- A user may not open a new request while they still have any meal swipes in their account. Attempting to visit `/requests/add/` with a positive balance returns to the dashboard with guidance to use remaining swipes first.
+- Backend constraint checks (`_ensure_swipes_constraint`) keep `swipes_needed` non-negative even if external systems write into the same Neon tables.
+
+### Weekly swipe resets
+
+- The platform assumes meal swipes are replenished every Sunday via a scheduled job outside of Django. Once the backend refreshes `public.users.meal_swipes`, the UI automatically reflects the new balance the next time the donor logs in.
+
+## Authors
+
+- Shelton
+- Defi
+- Rometh
+- Rohan

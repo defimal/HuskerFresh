@@ -3,6 +3,11 @@ from django import forms
 from .models import HelpRequest
 
 DATETIME_INPUT_FORMAT = "%Y-%m-%dT%H:%M"
+URGENCY_CHOICES = (
+    (3, "High · needs help today"),
+    (2, "Medium · within a day"),
+    (1, "Low · flexible timing"),
+)
 
 
 class HelpRequestForm(forms.ModelForm):
@@ -10,23 +15,28 @@ class HelpRequestForm(forms.ModelForm):
         widget=forms.DateTimeInput(attrs={"type": "datetime-local"}),
         input_formats=[DATETIME_INPUT_FORMAT],
     )
+    urgency = forms.TypedChoiceField(
+        choices=URGENCY_CHOICES,
+        coerce=int,
+        widget=forms.RadioSelect(attrs={"class": "hf-radio-group"}),
+    )
 
     class Meta:
         model = HelpRequest
         fields = (
             "need_type",
-            "description",
             "campus_zone",
             "needed_before",
             "urgency",
-            "swipes_needed",
         )
         widgets = {
-            "need_type": forms.TextInput(attrs={"placeholder": "E.g. Late lunch, Study session"}),
-            "description": forms.Textarea(attrs={"rows": 4, "placeholder": "Share context and meetup details"}),
+            "need_type": forms.Textarea(
+                attrs={"rows": 3, "placeholder": "Drop a quick comment for donors"}
+            ),
             "campus_zone": forms.TextInput(attrs={"placeholder": "Nebraska Union"}),
-            "urgency": forms.TextInput(attrs={"placeholder": "High / Medium / Low"}),
-            "swipes_needed": forms.NumberInput(attrs={"min": 1}),
+        }
+        labels = {
+            "need_type": "Comment",
         }
 
     def __init__(self, *args, **kwargs):

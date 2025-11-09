@@ -140,7 +140,7 @@
                 </div>
                 <div class="hf-request-card__body">
                     <h3>Comment</h3>
-                    <p class="hf-muted">{{ req.need_type }}</p>
+                    <p class="hf-muted">{{ req.description|default:req.need_type|default:"No comment provided." }}</p>
                     <div class="hf-request-meta">
                         <span>Requester <strong>{{ req.requester.username }}</strong></span>
                         <span class="hf-chip hf-chip-{{ req.urgency_label|slugify }}">{{ req.urgency_label }} urgency</span>

@@ -2,23 +2,13 @@
 
 {% block title %}Login{% endblock %}
 
+{% block header_theme %}hf-header--login{% endblock %}
+{% block header_cta %}{% endblock %}
 {% block content %}
-<section class="hf-cover">
-    <div class="hf-cover-hero">
-        <p class="hf-badge">SwipeShare Access</p>
-        <h1>Sign in to unlock the HuskerFresh dashboard.</h1>
-        <p class="hf-muted">
-            Every action inside HuskerFresh is tied to a Husker identity. Log in with any profile from the
-            <code>public.users</code> table, donate your spare swipes, and keep track of the leaderboard.
-        </p>
-        <ul class="hf-cover-facts">
-            <li>Only authenticated Huskers can browse or donate.</li>
-            <li>Passwords are demo-friendly and stored in plaintext.</li>
-            <li>Your session stays active until you choose to log out.</li>
-        </ul>
-    </div>
-    <div class="hf-cover-panel">
-        <form method="post" class="hf-cover-form">
+<section class="hf-cover hf-cover--hero-image">
+    <div class="hf-cover-watermark">SwipeShare</div>
+    <div class="hf-cover-glass">
+        <form method="post" class="hf-cover-form hf-cover-form--glass">
             {% csrf_token %}
             {% if next %}
                 <input type="hidden" name="next" value="{{ next }}">
@@ -33,7 +23,22 @@
             {% for field in form %}
                 <div class="hf-form-field">
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
+                    {% if field.name == "password" %}
+                        <div class="hf-input-eye-wrapper">
+                            {{ field }}
+                            <button type="button"
+                                    class="hf-eye-toggle"
+                                    aria-label="Show password"
+                                    data-eye-toggle>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
                     {% for error in field.errors %}
                         <div class="hf-alert hf-alert-danger">{{ error }}</div>
                     {% endfor %}
@@ -41,7 +46,6 @@
             {% endfor %}
             <button type="submit" class="hf-cover-submit">Enter Dashboard</button>
         </form>
-        
     </div>
 </section>
 {% endblock %}

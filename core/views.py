@@ -1,15 +1,20 @@
 from django.contrib import messages
 from django.db import connection, transaction
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.http import urlencode, url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
-from django.urls import reverse
 
 from .forms import HelpRequestForm, PublicLoginForm
 from .models import HelpRequest, PublicUser
 
 _swipe_constraint_checked = False
+URGENCY_LABELS = {
+    3: "High",
+    2: "Medium",
+    1: "Low",
+}
 
 
 def _ensure_swipes_constraint():
@@ -74,6 +79,14 @@ def request_list(request):
                 or current_user.meal_swipes <= 0
                 or req.requester_id == current_user.id
             )
+        try:
+            urgency_key = int(req.urgency)
+        except (TypeError, ValueError):
+            urgency_key = None
+        if urgency_key is not None:
+            req.urgency_label = URGENCY_LABELS.get(urgency_key, str(req.urgency))
+        else:
+            req.urgency_label = str(req.urgency or "Unspecified")
     leaderboard = (
         PublicUser.objects.order_by("-donation_points", "username")
         .values("username", "donation_points")
@@ -89,6 +102,7 @@ def request_list(request):
             "stats": {
                 "total_requests": len(requests_qs),
                 "open_requests": open_requests,
+                "matched_requests": max(len(requests_qs) - open_requests, 0),
                 "swipes_needed": total_swipes_needed,
                 "donor_swipes": current_user.meal_swipes if current_user else 0,
             },
@@ -100,12 +114,20 @@ def request_create(request):
     requester = _get_session_user(request)
     if not requester:
         return _redirect_to_login(request)
+    if (requester.meal_swipes or 0) > 0:
+        messages.error(
+            request,
+            "You still have meal swipes available. Use them first before creating a new request.",
+        )
+        return redirect("requests_list")
 
     if request.method == "POST":
         form = HelpRequestForm(request.POST)
         if form.is_valid():
             help_request = form.save(commit=False)
             help_request.requester = requester
+            help_request.description = help_request.need_type
+            help_request.swipes_needed = 1
             help_request.status = "open"
             now = timezone.now()
             if not help_request.created_at:
@@ -161,6 +183,15 @@ def request_donate(request, pk):
     donor = _get_session_user(request)
     if not donor:
         return _redirect_to_login(request)
+    swipes_raw = request.POST.get("swipes", "1")
+    try:
+        swipes_to_give = int(swipes_raw)
+    except (TypeError, ValueError):
+        messages.error(request, "Please enter a valid number of swipes to donate.")
+        return redirect("requests_list")
+    if swipes_to_give < 1:
+        messages.error(request, "You must donate at least 1 swipe.")
+        return redirect("requests_list")
     try:
         with transaction.atomic():
             donor_locked = (
@@ -181,16 +212,21 @@ def request_donate(request, pk):
                 .get(pk=help_request.requester_id)
             )
 
-            if donor_locked.meal_swipes < 1:
+            if donor_locked.meal_swipes < swipes_to_give:
                 raise ValueError("You do not have enough swipes to donate.")
             if help_request.swipes_needed <= 0 or help_request.status.lower() == "matched":
                 raise ValueError("This request is already fulfilled.")
+            if swipes_to_give > help_request.swipes_needed:
+                raise ValueError(
+                    f"This request only needs {help_request.swipes_needed} swipe(s)."
+                )
 
-            donor_locked.meal_swipes -= 1
-            donor_locked.donation_points = (donor_locked.donation_points or 0) + 1
-            requester_locked.meal_swipes += 1
-            help_request.swipes_needed = help_request.swipes_needed - 1
-            if help_request.swipes_needed == 0:
+            donor_locked.meal_swipes -= swipes_to_give
+            donor_locked.donation_points = (donor_locked.donation_points or 0) + swipes_to_give
+            requester_locked.meal_swipes += swipes_to_give
+            help_request.swipes_needed = help_request.swipes_needed - swipes_to_give
+            if help_request.swipes_needed <= 0:
+                help_request.swipes_needed = 0
                 help_request.status = "matched"
             help_request.updated_at = timezone.now()
 
@@ -200,7 +236,7 @@ def request_donate(request, pk):
 
             messages.success(
                 request,
-                f"Donated 1 swipe to {help_request.requester.username}'s request.",
+                f"Donated {swipes_to_give} swipe{'s' if swipes_to_give != 1 else ''} to {help_request.requester.username}'s request.",
             )
     except ValueError as exc:
         messages.error(request, str(exc))
