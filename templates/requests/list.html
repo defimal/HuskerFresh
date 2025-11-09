@@ -3,123 +3,198 @@
 {% block title %}Help Requests{% endblock %}
 
 {% block content %}
-<section class="hf-card">
-    <div class="hero">
-        <p class="hf-badge">SwipeShare Dashboard</p>
-        <h1>Fuel the Husker community, one swipe at a time.</h1>
-        <p class="hf-muted">Browse open requests, donate spare swipes instantly, and climb the donor leaderboard.</p>
+{% load humanize %}
+<section class="hf-hero-grid hf-hero-grid--stacked">
+    <div class="hf-hero-panel hf-panel hf-panel--hero hf-panel--flat">
+        <span class="hf-hero-glow" aria-hidden="true"></span>
+        <span class="hf-banana-icon" aria-hidden="true"></span>
+        <p class="hf-badge">SwipeShare Command</p>
+        <h1>Share extra meal swipes with Huskers who need them.</h1>
+        <p class="hf-muted">
+            SwipeShare connects Huskers who need a meal with Huskers who have one to give. Post a swipe request, donate instantly, and see the community impact in real time.
+        </p>
+        <div class="hf-hero-meta">
+            <div class="hf-meta-chip">
+                <span>Open</span>
+                <strong>{{ stats.open_requests }}</strong>
+            </div>
+            <div class="hf-meta-chip">
+                <span>Matched</span>
+                <strong>{{ stats.matched_requests }}</strong>
+            </div>
+            <div class="hf-meta-chip">
+                <span>Active donors</span>
+                <strong>{{ leaderboard|length }}</strong>
+            </div>
+        </div>
         {% if current_user %}
-            <div class="hf-donor-chip">You ({{ current_user.username }}) currently hold <strong>{{ current_user.meal_swipes }}</strong> swipes.</div>
+            <div class="hf-profile-callout">
+                <div>
+                    <p class="hf-muted small">Authenticated as</p>
+                    <h3>{{ current_user.username }}</h3>
+                </div>
+                <div class="hf-chip hf-chip-soft">
+                    <span>Swipes on hand</span>
+                    <strong>{{ current_user.meal_swipes }}</strong>
+                </div>
+            </div>
+            <div class="hf-hero-actions">
+                <a href="{% url 'requests_add' %}" class="hf-pill">Create request</a>
+                <a href="#leaderboard" class="hf-outline-btn">View leaderboard</a>
+            </div>
         {% else %}
-            <div class="hf-donor-chip">
-                You are browsing anonymously. <a href="{% url 'login' %}">Log in</a> to donate as yourself.
+            <div class="hf-profile-callout">
+                <p class="hf-muted">
+                    You are browsing anonymously. <a href="{% url 'login' %}">Log in</a> to donate or create new requests.
+                </p>
+            </div>
+            <div class="hf-hero-actions">
+                <a href="{% url 'login' %}" class="hf-pill">Login to participate</a>
+                <a href="{% url 'requests_add' %}" class="hf-outline-btn">Preview request form</a>
             </div>
         {% endif %}
     </div>
-    <div class="hf-stats">
-        <div class="hf-stat-card">
-            <p class="hf-stat-label">Total Requests</p>
-            <p class="hf-stat-value">{{ stats.total_requests }}</p>
-        </div>
-        <div class="hf-stat-card">
-            <p class="hf-stat-label">Open Requests</p>
-            <p class="hf-stat-value">{{ stats.open_requests }}</p>
-        </div>
-        <div class="hf-stat-card">
-            <p class="hf-stat-label">Swipes Needed</p>
-            <p class="hf-stat-value">{{ stats.swipes_needed }}</p>
-        </div>
-        <div class="hf-stat-card">
-            <p class="hf-stat-label">Your Swipes</p>
-            <p class="hf-stat-value">{{ stats.donor_swipes }}</p>
-        </div>
+    <div class="hf-stat-stack">
+        <article class="hf-stat-panel">
+            <p class="hf-stat-label">Open requests</p>
+            <h2>{{ stats.open_requests }}</h2>
+            <p class="hf-subtext">Out of {{ stats.total_requests }} tracked</p>
+        </article>
+        <article class="hf-stat-panel">
+            <p class="hf-stat-label">Swipes still needed</p>
+            <h2>{{ stats.swipes_needed }}</h2>
+            <p class="hf-subtext">Every swipe equals one meal unlocked</p>
+        </article>
+        <article class="hf-stat-panel">
+            <p class="hf-stat-label">Your available swipes</p>
+            <h2>{% if current_user %}{{ current_user.meal_swipes }}{% else %}&mdash;{% endif %}</h2>
+            <p class="hf-subtext">{% if current_user %}Ready to donate now{% else %}Login required to donate{% endif %}</p>
+        </article>
     </div>
 </section>
 
-<section class="requests-toolbar">
-    <input type="search" placeholder="Search by zone, need or requester..." data-filter="search">
-    <select data-filter="status">
-        <option value="all">All statuses</option>
-        <option value="open">Open</option>
-        <option value="matched">Matched</option>
-    </select>
+<section class="hf-utility-row">
+    <div class="hf-panel hf-panel--flat hf-filters-card">
+        <div class="hf-filters-head">
+            <div>
+                <p class="hf-badge hf-badge-inline">Live filters</p>
+                <h2>Find the next request to champion</h2>
+            </div>
+            <span class="hf-chip hf-chip-soft">{{ requests|length }} active card{% if requests|length != 1 %}s{% endif %}</span>
+        </div>
+        <div class="hf-filter-fields">
+            <div class="hf-input-wrap">
+                <label for="search-requests">Search</label>
+                <input id="search-requests"
+                       class="hf-input"
+                       type="search"
+                       placeholder="Requester, zone, need or keywords"
+                       data-filter="search">
+            </div>
+            <div class="hf-input-wrap">
+                <label for="filter-status">Status</label>
+                <select id="filter-status" class="hf-input" data-filter="status">
+                    <option value="all">All statuses</option>
+                    <option value="open">Open</option>
+                    <option value="matched">Matched</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="hf-panel hf-panel--flat hf-leader-card" id="leaderboard">
+        <div class="hf-leader-head">
+            <p class="hf-badge hf-badge-inline">Leaderboard</p>
+            <h2>Top donors</h2>
+        </div>
+        {% if leaderboard %}
+            <div class="hf-leader-lines">
+                {% for entry in leaderboard %}
+                    <div class="hf-leader-line">
+                        <span class="hf-leader-rank">{{ forloop.counter|stringformat:"02d" }}</span>
+                        <div>
+                            <p class="hf-leader-name">{{ entry.username }}</p>
+                            <p class="hf-subtext">Impact points</p>
+                        </div>
+                        <span class="hf-leader-score">{{ entry.donation_points|default:0 }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="hf-muted">No donations yet. Your name could lead this board.</p>
+        {% endif %}
+    </div>
 </section>
 
 {% if requests %}
-    <section class="requests-grid">
+    <section class="hf-flow-grid">
         {% for req in requests %}
             {% with status=req.status|lower %}
-            <article class="hf-card request-card"
+            <article class="hf-panel hf-panel--flat hf-request-card"
                      data-request-card
                      data-status="{{ status }}"
-                     data-search-blob="{{ req.requester.username }} {{ req.need_type }} {{ req.description }} {{ req.campus_zone }} {{ req.urgency }}">
-                <div class="request-meta">
+                     data-search-blob="{{ req.requester.username }} {{ req.need_type }} {{ req.campus_zone }} {{ req.urgency_label }}">
+                <div class="hf-request-card__header">
                     <span class="request-status {{ status }}">{{ req.status }}</span>
-                    <span>{{ req.campus_zone }}</span>
-                    <span>Needed by {{ req.needed_before|date:"M d, H:i" }}</span>
+                    <span class="hf-chip hf-chip-zone">Requested {{ req.created_at|naturaltime }}</span>
                 </div>
-                <h3>{{ req.need_type }}</h3>
-                <p class="hf-muted">{{ req.description }}</p>
-                <div class="request-meta">
-                    <span>Requester: <strong>{{ req.requester.username }}</strong></span>
-                    <span>Urgency: <strong>{{ req.urgency }}</strong></span>
+                <div class="hf-request-card__body">
+                    <h3>Comment</h3>
+                    <p class="hf-muted">{{ req.need_type }}</p>
+                    <div class="hf-request-meta">
+                        <span>Requester <strong>{{ req.requester.username }}</strong></span>
+                        <span class="hf-chip hf-chip-{{ req.urgency_label|slugify }}">{{ req.urgency_label }} urgency</span>
+                    </div>
+                    <div class="hf-request-meta">
+                        <span>Needed by {{ req.needed_before|date:"M d, H:i" }}</span>
+                    </div>
                 </div>
-                <div>
+                <div class="hf-request-card__footer">
                     <div class="hf-progress">
                         <span style="width: {{ req.progress_pct }}%;"></span>
                     </div>
-                    <p class="hf-muted small">
-                        Swipes needed: <strong>{{ req.swipes_needed }}</strong>
-                    </p>
-                </div>
-                <div class="hf-actions">
-                    {% if current_user %}
-                        <form method="post" action="{% url 'requests_donate' req.id %}">
-                            {% csrf_token %}
-                            <button type="submit" {% if req.disable_donate %}disabled{% endif %}>
-                                Donate 1 Swipe
-                            </button>
-                        </form>
-                    {% else %}
-                        <a class="hf-pill" href="{% url 'login' %}">Login to donate</a>
-                    {% endif %}
+                    <div class="hf-request-footer">
+                        <p class="hf-muted small">Swipes requested: <strong>{{ req.swipes_needed }}</strong></p>
+                        <div class="hf-request-actions">
+                            {% if current_user %}
+                                <form method="post"
+                                      action="{% url 'requests_donate' req.id %}"
+                                      data-donate-form
+                                      data-requester="{{ req.requester.username }}">
+                                    {% csrf_token %}
+                                    <div class="hf-quantity">
+                                        <label for="swipes-{{ req.id }}">Swipes</label>
+                                        <input
+                                            id="swipes-{{ req.id }}"
+                                            class="hf-input hf-input--compact"
+                                            type="number"
+                                            name="swipes"
+                                            min="1"
+                                            max="{{ req.swipes_needed }}"
+                                            value="1"
+                                            required
+                                        >
+                                    </div>
+                                    <button type="submit" {% if req.disable_donate %}disabled{% endif %}>
+                                        Donate swipes
+                                    </button>
+                                </form>
+                            {% else %}
+                                <a class="hf-pill" href="{% url 'login' %}">Login to donate</a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </article>
             {% endwith %}
         {% endfor %}
     </section>
 {% else %}
-    <div class="hf-card">
-        <p>No requests found yet. Be the first to post one!</p>
+    <div class="hf-panel hf-panel--flat hf-empty-state">
+        <p class="hf-badge hf-badge-inline">All clear</p>
+        <h3>No requests yet</h3>
+        <p class="hf-muted">You could be the first to publish a need or encourage others to donate.</p>
+        <a class="hf-pill" href="{% url 'requests_add' %}">Create request</a>
     </div>
-{% endif %}
-
-{% if leaderboard %}
-    <section class="hf-card leaderboard">
-        <div class="hf-actions" style="justify-content: space-between; align-items: center;">
-            <div>
-                <p class="hf-badge">Leaderboard</p>
-                <h2 class="mb-0">Top Donors</h2>
-            </div>
-        </div>
-        <table>
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>User</th>
-                <th>Donation Points</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for entry in leaderboard %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ entry.username }}</td>
-                    <td>{{ entry.donation_points|default:0 }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </section>
 {% endif %}
 {% endblock %}
