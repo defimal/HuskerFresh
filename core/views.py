@@ -58,16 +58,15 @@ def request_list(request):
     requests_qs = list(HelpRequest.objects.select_related("requester").all())
     total_swipes_needed = 0
     open_requests = 0
+    matched_requests = 0
     for req in requests_qs:
         req.disable_donate = True
         remaining = max(0, req.swipes_needed)
         total_swipes_needed += remaining
         if str(req.status).lower() != "matched" and remaining > 0:
             open_requests += 1
-        if remaining == 0 or str(req.status).lower() == "matched":
-            req.progress_pct = 100
         else:
-            req.progress_pct = max(12, 100 - min(remaining, 10) * 8)
+            matched_requests += 1
         if current_user:
             req.disable_donate = (
                 remaining <= 0
@@ -89,6 +88,7 @@ def request_list(request):
             "stats": {
                 "total_requests": len(requests_qs),
                 "open_requests": open_requests,
+                "matched_requests": matched_requests,
                 "swipes_needed": total_swipes_needed,
                 "donor_swipes": current_user.meal_swipes if current_user else 0,
             },

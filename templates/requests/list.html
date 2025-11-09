@@ -1,9 +1,9 @@
 {% extends "base.html" %}
+{% load hf_extras %}
 
 {% block title %}Help Requests{% endblock %}
 
 {% block content %}
-{% load humanize %}
 <section class="hf-hero-grid hf-hero-grid--stacked">
     <div class="hf-hero-panel hf-panel hf-panel--hero hf-panel--flat">
         <span class="hf-hero-glow" aria-hidden="true"></span>
@@ -136,7 +136,7 @@
                      data-search-blob="{{ req.requester.username }} {{ req.need_type }} {{ req.campus_zone }} {{ req.urgency_label }}">
                 <div class="hf-request-card__header">
                     <span class="request-status {{ status }}">{{ req.status }}</span>
-                    <span class="hf-chip hf-chip-zone">Requested {{ req.created_at|naturaltime }}</span>
+                    <span class="hf-chip hf-chip-zone">Requested {{ req.created_at|date:"M d, H:i" }}</span>
                 </div>
                 <div class="hf-request-card__body">
                     <h3>Comment</h3>
@@ -151,7 +151,7 @@
                 </div>
                 <div class="hf-request-card__footer">
                     <div class="hf-progress">
-                        <span style="width: {{ req.progress_pct }}%;"></span>
+                        <span style="width: {{ req.swipes_needed|width_percent }}%;"></span>
                     </div>
                     <div class="hf-request-footer">
                         <p class="hf-muted small">Swipes requested: <strong>{{ req.swipes_needed }}</strong></p>

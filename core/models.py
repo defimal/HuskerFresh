@@ -38,6 +38,14 @@ class PublicUser(models.Model):
 
 
 class HelpRequest(models.Model):
+    URGENCY_CHOICES = (
+        (1, "Low"),
+        (2, "Medium"),
+        (3, "High"),
+        (4, "Critical"),
+        (5, "Emergency"),
+    )
+
     id = models.AutoField(primary_key=True)
     requester = models.ForeignKey(
         PublicUser,
@@ -49,7 +57,7 @@ class HelpRequest(models.Model):
     description = models.TextField()
     campus_zone = models.TextField()
     needed_before = models.DateTimeField()
-    urgency = models.TextField()
+    urgency = models.IntegerField(choices=URGENCY_CHOICES)
     swipes_needed = models.IntegerField()
     status = models.TextField()
     created_at = models.DateTimeField()
@@ -62,3 +70,7 @@ class HelpRequest(models.Model):
 
     def __str__(self) -> str:
         return f"{self.requester.username} · {self.need_type}"
+
+    @property
+    def urgency_label(self) -> str:
+        return dict(self.URGENCY_CHOICES).get(self.urgency, "Unknown")

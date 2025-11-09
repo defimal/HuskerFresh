@@ -11,6 +11,12 @@ class HelpRequestForm(forms.ModelForm):
         input_formats=[DATETIME_INPUT_FORMAT],
     )
 
+    urgency = forms.TypedChoiceField(
+        choices=HelpRequest.URGENCY_CHOICES,
+        coerce=int,
+        widget=forms.Select(attrs={"class": "hf-input"}),
+    )
+
     class Meta:
         model = HelpRequest
         fields = (
@@ -25,7 +31,6 @@ class HelpRequestForm(forms.ModelForm):
             "need_type": forms.TextInput(attrs={"placeholder": "E.g. Late lunch, Study session"}),
             "description": forms.Textarea(attrs={"rows": 4, "placeholder": "Share context and meetup details"}),
             "campus_zone": forms.TextInput(attrs={"placeholder": "Nebraska Union"}),
-            "urgency": forms.TextInput(attrs={"placeholder": "High / Medium / Low"}),
             "swipes_needed": forms.NumberInput(attrs={"min": 1}),
         }
 
