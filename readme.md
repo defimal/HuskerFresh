@@ -152,15 +152,4 @@ This ensures no race conditions, even if multiple donors try to help simultaneou
 
 ## 11. Summary
 
-| Category | Target Score | Notes |
-|----------|--------------|-------|
-| Problem Solved | 115 | Addresses a real social issue (student food insecurity) |
-| Innovation | 120 | Direct Neon integration, atomic donation, banana UX |
-| Difficulty | 115 | Significant functionality delivered in hackathon timeline |
-| Completeness | 115 | Login, create, donate, leaderboard, docs |
-| Solution Quality | 115 | Tangible benefits, consistent user experience |
-| Design Practices | 110 | Clean architecture, transactions, theme system |
-| Presentation | 110 | Polished README, flows, and visuals |
-| **Total** | **1100** | Checks every judging rubric box |
-
-HuskerFresh shows that a well-scoped idea, carefully executed, can make a real difference on campus—while still having fun with bananas. 🍌
+HuskerFresh checks each judging box with a compelling story, robust execution, and delightful presentation—proof that a focused team can change campus life in a single weekend. 🍌
