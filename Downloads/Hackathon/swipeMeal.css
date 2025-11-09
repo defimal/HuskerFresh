@@ -1,0 +1,404 @@
+* {
+	margin: 0;
+}
+
+body {
+	background: #fff8dc; /* Light banana yellow */
+	font-family: 'Poppins', sans-serif;
+}
+
+.tabs {
+	align-items: center;
+	height: 600px;
+	background-image: url(minibanana.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+/* NAVIGATION BAR */
+.top {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	box-shadow: 0 5px 15px rgba(255, 235, 59, 0.5);
+	background-color: #fffacd; /* pale banana yellow */
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 20px;
+}
+
+.logo img {
+	margin-top: 5px;
+	margin-left: 20px;
+	float: left;
+	width: 250px;
+	height: auto;
+}
+
+table {
+	font-size: 20px;
+	margin-right: 20px;
+	margin-top: 5px;
+	padding: 1px;
+}
+
+tr th a {
+	text-decoration: none;
+	color: #795548; /* chocolate brown text */
+	border: 3px solid #ffeb3b;
+	padding: 5px 20px;
+	border-radius: 5px;
+	background-color: #fffde7;
+	transition: 0.3s;
+}
+
+tr th a:hover {
+	background-color: #ffeb3b;
+	color: white;
+	border-color: #fbc02d;
+}
+
+.active {
+	border: 3px solid #fdd835;
+	color: #f57f17;
+}
+
+/* SEARCH BAR */
+.search {
+	display: flex;
+	width: 530px;
+	float: left;
+	margin-left: 200px;
+	margin-top: 5px;
+}
+
+.srch {
+	width: 400px;
+	height: 40px;
+	background: #fff59d;
+	border: 1px solid #fbc02d;
+	color: #333;
+	font-size: 16px;
+	padding: 10px;
+	border-radius: 5px 0 0 5px;
+}
+
+.srch::placeholder {
+	color: #8d6e63;
+	opacity: 1;
+}
+
+.btn {
+	cursor: pointer;
+	width: 100px;
+	height: 40px;
+	background: #fbc02d;
+	color: white;
+	font-weight: bold;
+	border: none;
+	border-radius: 0 5px 5px 0;
+}
+
+.btn:hover {
+	background: #fdd835;
+}
+
+.cart {
+	position: relative;
+}
+
+.cart img {
+	background: white;
+	position: absolute;
+	left: 140px;
+	margin-top: -17px;
+	width: 45px;
+	height: auto;
+	border-radius: 5px;
+}
+
+/* HEAD TEXT */
+/* ==================== HERO SECTION ==================== */
+.tabs {
+	align-items: center;
+	height: 600px;
+	background-image: url(minibanana.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	position: relative;
+}
+
+/* Centered Heading */
+.headtext {
+	text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	font-size: 65px;
+	color: #fffacd;
+	font-weight: bold;
+	position: relative;
+	top: 260px;
+}
+
+/* ==================== HERO BUTTONS ==================== */
+.shopNow {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 25px;
+	margin-top: 320px;
+}
+
+.shopNow a {
+	text-decoration: none;
+}
+
+.shopbtn {
+	padding: 12px 25px;
+	border-radius: 10px;
+	border: none;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: bold;
+	color: #4e342e;
+	background: linear-gradient(90deg, #fff176, #fbc02d);
+	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+	transition: all 0.3s ease;
+}
+
+.shopbtn:hover {
+	background: linear-gradient(90deg, #fdd835, #ffee58);
+	transform: scale(1.05);
+	color: #3e2723;
+}
+
+/* ==================== FEATURE BOXES ==================== */
+.boxes {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 40px;
+	margin-top: 60px;
+	margin-bottom: 80px;
+	flex-wrap: wrap;
+}
+
+.boxOne, .boxTwo, .boxThree {
+	box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.2);
+	width: 280px;
+	height: 300px;
+	border: 2px solid #fbc02d;
+	border-radius: 12px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	background: rgba(255, 255, 255, 0.95);
+    transition: all 0.3s ease;
+}
+
+.boxOne img, .boxTwo img, .boxThree img {
+	width: 80px;
+	height: auto;
+	margin-bottom: 15px;
+}
+
+.text {
+	font-family: 'Arial Black';
+	font-size: 22px;
+	color: #5a4b00;
+}
+
+/* ==================== FOOTER ==================== */
+.bottom {
+	background: #fbc02d;
+	color: #3e2723;
+	padding: 40px 20px;
+	text-align: center;
+	margin-top: 100px;
+}
+
+.bottom pre {
+	color: #3e2723;
+	font-size: 16px;
+	line-height: 1.6;
+	white-space: pre-wrap;
+}
+
+.bottom b {
+	color: #4e342e;
+	font-size: 18px;
+}
+
+.img1 img, .img2 img, .img3 img {
+	width: 25px;
+	height: auto;
+	margin: 10px;
+}
+
+tr th a {
+	display: inline-flex;           /* keeps text vertically centered */
+	align-items: center;
+	justify-content: center;
+	white-space: nowrap;           /* prevents text wrapping */
+	font-size: 16px;               /* slightly smaller text */
+	padding: 6px 14px;             /* balanced padding */
+	border: 2px solid #ffeb3b;     /* thinner border for cleaner look */
+}
+
+table {
+	font-size: 16px;               /* smaller nav text overall */
+	margin-right: 10px;
+	margin-top: 0;
+}
+
+.top {
+	padding: 6px 20px;             /* smaller nav height */
+}
+
+/*hover for boxes
+
+
+/* Initially hide the hover info */
+.boxes .hover-info {
+    display: none; /* Hides the hover text by default */
+    font-size: 16px;
+    color: #795548; /* A darker brown for contrast */
+    margin-top: 10px;
+    padding: 0 15px;
+    line-height: 1.4;
+    position: absolute; /* Needed for smooth transition with p */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%; /* Adjust as needed */
+    box-sizing: border-box; /* Include padding in width */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Style the main text that is always visible */
+.boxes .text p {
+    transition: opacity 0.3s ease-in-out; /* Smooth transition for the main text */
+    position: absolute; /* Allows span to take its place without shifting layout */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%; /* Ensure it takes full width for centering */
+    box-sizing: border-box;
+    padding: 0 15px; /* Add some padding to prevent text touching edges */
+}
+
+/* On hover, hide the main text and show the hover info */
+.boxOne:hover .text p,
+.boxTwo:hover .text p,
+.boxThree:hover .text p {
+    opacity: 0; /* Fade out the main text */
+    pointer-events: none; /* Make it unclickable */
+}
+
+.boxOne:hover .hover-info,
+.boxTwo:hover .hover-info,
+.boxThree:hover .hover-info {
+    display: block; /* Show the hover text */
+    opacity: 1; /* Fade in the hover text */
+}
+
+/* Improve the box hover effect for visual feedback */
+.boxOne:hover,
+.boxTwo:hover,
+.boxThree:hover {
+    transform: scale(1.05);
+    transform: translateY(-5px); /* Lift the box slightly */
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3); /* Enhance shadow */
+    border-color: #fdd835; /* Change border color on hover */
+    background: #fffef2; /* Slightly brighter background on hover */
+}
+
+/* Ensure the .text div can properly contain both p and span and center them */
+.boxes .text {
+    position: relative; /* Important for absolute positioning of p and span */
+    height: 100px; /* Give it a fixed height to prevent content shifting */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically center content */
+    align-items: center; /* Horizontally center content */
+    width: 100%; /* Ensure it takes full width of its parent box */
+}
+
+
+/* ==================== LEADERBOARD SECTION ==================== */
+.leaderboard {
+    margin: 100px auto;
+    background: #fff9c4;
+    border: 3px solid #fbc02d;
+    border-radius: 15px;
+    box-shadow: 4px 4px 15px rgba(251, 192, 45, 0.4);
+    width: 80%;
+    padding: 30px;
+    text-align: center;
+}
+
+.leaderboard h2 {
+    color: #5a4b00;
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 5px rgba(255, 235, 59, 0.5);
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 18px;
+    font-family: 'Poppins', sans-serif;
+    background: #fffde7;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    padding: 15px;
+    border-bottom: 2px solid #fdd835;
+}
+
+.leaderboard-table th {
+    background: #fbc02d;
+    color: #3e2723;
+    font-size: 20px;
+}
+
+.leaderboard-table tr:hover {
+    background-color: #fff59d;
+    transition: background 0.3s ease;
+}
+
+.gold {
+    background: linear-gradient(to right, #fff176, #fbc02d);
+    font-weight: bold;
+}
+.silver {
+    background: linear-gradient(to right, #eeeeee, #bdbdbd);
+    font-weight: bold;
+}
+.bronze {
+    background: linear-gradient(to right, #ffcc80, #f57c00);
+    font-weight: bold;
+}
+
+/* Donation input area */
+.donate-form {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
