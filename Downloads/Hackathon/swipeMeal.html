@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SwipeShare</title>
+	<link rel="stylesheet" type="text/css" href="swipeMeal.css">
+</head>
+<body>
+
+<div class="tabs">
+    <br>
+	<div class="top">
+		<div class="logo">
+			<a href="#" onclick="location.reload(); return false;">
+				<img src="logo-removebg-preview.png">
+			</a>
+	    </div>
+
+	    <div class="cart">
+	    	<a href="#"><img src="cart.png"></a>
+	    </div>
+
+	    <div class="search">
+	    	<input class="srch" type="search" name="" placeholder="Find Dining Hall or Swipes..."></input>
+	    	<a href="#"><button class="btn">Search</button></a>
+	    </div>
+
+		<table align="right" cellpadding="20px ">
+			<tr>	
+				<th><a href="swipeMeal.html" class="active">Home</a></th>
+				<th><a href="#">About</a></th>
+				<th><a href="#">Listed Swipes</a></th>
+				<th><a href="#">Sign-In</a></th>
+			</tr>	
+		</table>
+		<br>
+        <br>
+	</div>
+
+	<div class="mainindex">	
+		<p class="headtext">Share or Request a Meal Swipe 🍽️</p>
+
+		<!-- TWO BUTTONS HERE -->
+		<div class="shopNow">
+			<a href="list.html"><button class="shopbtn"> Bless Someone</button></a>
+			<a href="request.html"><button class="shopbtn"> Make a Request</button></a>
+		</div>
+
+
+		<div class="boxes">
+			<div class="boxOne">
+				<div class="picone">
+					<img src="box1.png" alt="Delivery Icon">
+				</div>
+				<div class="text">
+					<p>Free Sharing</p>
+                    <span class="hover-info">Share meals without any cost to those in need.</span>
+				</div>
+			</div>
+
+			<div class="boxTwo">
+				<div class="pictwo">
+					<img src="box2.png" alt="Vege Icon">
+				</div>
+				<div class="text">
+					<p>Earn With Banana-Bucks</p>
+                    <span class="hover-info">Get rewards for sharing your extra meal swipes!</span>
+				</div>
+			</div>
+
+			<div class="boxThree">
+				<div class="picthree">
+					<img src="box3.png" alt="Payment Icon">
+				</div>
+				<div class="text">
+					<p>Zero Cost, Pure Kindness</p>
+                    <span class="hover-info">Receive meals with no strings attached, just pure kindness.</span>  
+				</div>
+			</div>
+		</div>
+	</div>	
+</div>
+
+<br><br><br><br><br><br><br><br><br><br>
+
+<div class="leaderboard">
+    <h2>🍌 Top Banana Donors 🍌</h2>
+    <p id="empty-message">No donations yet. Be the first to share your swipes! 🍽️</p>
+
+    <table class="leaderboard-table" id="leaderboard-table" style="display: none;">
+        <tr class="table-header">
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Swipes Shared</th>
+            <th>Banana-Bucks 🍌</th>
+        </tr>
+        <!-- Rows will be added dynamically -->
+    </table>
+
+    <!-- Temporary test form to simulate donations -->
+    
+</div>
+
+
+<!---
+<hr>	
+<div class="bottom">
+<hr>	
+<pre><b>	 Contact Us</b>					 	<b>Locations</b>						<b>Partners</b>
+
+	 +1 47 73248924						Lincoln, NE						Campus Dining
+	 swipeshare@unl.edu					Omaha, NE						UNL Food Support
+		  						Chicago, IL							
+
+<div class="img1"><img src="callIcon.png"></div>
+<div class="img2"><img src="locationIcon.png"></div>
+<div class="img3"><img src="sponsorIcon.png"></div>	
+</pre>	 
+</div>	-->
+
+<!--JAVASCRIPT FOR LEADERBOARD-->
+
+<script>
+async function loadLeaderboard() {
+    const res = await fetch('/api/leaderboard');  // gets data from backend
+    const donors = await res.json();
+    const table = document.getElementById('leaderboard-table');
+    const emptyMsg = document.getElementById('empty-message');
+
+    if (donors.length === 0) {
+        table.style.display = 'none';
+        emptyMsg.style.display = 'block';
+        return;
+    }
+
+    emptyMsg.style.display = 'none';
+    table.style.display = 'table';
+
+    table.innerHTML = `
+        <tr class="table-header">
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Swipes Shared</th>
+            <th>Banana-Bucks 🍌</th>
+        </tr>
+    `;
+
+    donors.forEach((donor, index) => {
+        const row = document.createElement('tr');
+        if (index === 0) row.classList.add('gold');
+        else if (index === 1) row.classList.add('silver');
+        else if (index === 2) row.classList.add('bronze');
+
+        row.innerHTML = `
+            <td>${index + 1 <= 3 ? ['🥇','🥈','🥉'][index] || index+1 : index+1}</td>
+            <td>${donor.donor_name}</td>
+            <td>${donor.total_swipes}</td>
+            <td>${donor.total_swipes * 10}</td>
+        `;
+        table.appendChild(row);
+    });
+}
+
+loadLeaderboard();
+</script>
+
+
+</body>
+</html>

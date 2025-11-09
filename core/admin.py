@@ -1,19 +1,19 @@
 from django.contrib import admin
 
-from .models import Offer
+from .models import HelpRequest
 
 
-@admin.register(Offer)
-class OfferAdmin(admin.ModelAdmin):
+@admin.register(HelpRequest)
+class HelpRequestAdmin(admin.ModelAdmin):
     list_display = (
-        "owner",
-        "meal_type",
+        "requester",
+        "need_type",
         "campus_zone",
-        "swipes_count",
-        "price_usd",
+        "urgency",
+        "swipes_needed",
+        "needed_before",
         "status",
-        "start_at",
     )
-    list_filter = ("status", "campus_zone")
-    search_fields = ("owner__username", "meal_type", "campus_zone", "status")
+    list_filter = ("status", "campus_zone", "urgency")
+    search_fields = ("requester__username", "need_type", "campus_zone", "status")
     ordering = ("-created_at",)

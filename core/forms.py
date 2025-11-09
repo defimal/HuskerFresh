@@ -1,31 +1,26 @@
 from django import forms
 
-from .models import Offer
+from .models import HelpRequest
 
 DATETIME_INPUT_FORMAT = "%Y-%m-%dT%H:%M"
 
 
-class OfferForm(forms.ModelForm):
-    start_at = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={"type": "datetime-local"}),
-        input_formats=[DATETIME_INPUT_FORMAT],
-    )
-    end_at = forms.DateTimeField(
+class HelpRequestForm(forms.ModelForm):
+    needed_before = forms.DateTimeField(
         widget=forms.DateTimeInput(attrs={"type": "datetime-local"}),
         input_formats=[DATETIME_INPUT_FORMAT],
     )
 
     class Meta:
-        model = Offer
+        model = HelpRequest
         fields = (
-            "meal_type",
-            "swipes_count",
-            "price_usd",
+            "need_type",
+            "description",
             "campus_zone",
-            "start_at",
-            "end_at",
-            "notes",
+            "needed_before",
+            "urgency",
+            "swipes_needed",
         )
         widgets = {
-            "notes": forms.Textarea(attrs={"rows": 3}),
+            "description": forms.Textarea(attrs={"rows": 4}),
         }

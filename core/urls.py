@@ -1,8 +1,9 @@
 from django.urls import path
 
-from .views import offer_create, offer_list
+from .views import request_create, request_donate, request_list
 
 urlpatterns = [
-    path("", offer_list, name="offers_list"),
-    path("add/", offer_create, name="offers_add"),
+    path("", request_list, name="requests_list"),
+    path("add/", request_create, name="requests_add"),
+    path("<int:pk>/donate/", request_donate, name="requests_donate"),
 ]

@@ -5,6 +5,8 @@ class PublicUser(models.Model):
     id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=150)
     password = models.CharField(max_length=255)
+    meal_swipes = models.IntegerField()
+    donation_points = models.IntegerField(default=0)
     created_at = models.DateTimeField()
 
     class Meta:
@@ -35,29 +37,28 @@ class PublicUser(models.Model):
         return False
 
 
-class Offer(models.Model):
+class HelpRequest(models.Model):
     id = models.AutoField(primary_key=True)
-    owner = models.ForeignKey(
+    requester = models.ForeignKey(
         PublicUser,
-        db_column="owner_user_id",
-        related_name="offers",
+        db_column="requester_user_id",
+        related_name="requests",
         on_delete=models.DO_NOTHING,
     )
-    meal_type = models.TextField()
-    swipes_count = models.IntegerField()
-    price_usd = models.DecimalField(max_digits=8, decimal_places=2)
+    need_type = models.TextField()
+    description = models.TextField()
     campus_zone = models.TextField()
-    start_at = models.DateTimeField()
-    end_at = models.DateTimeField()
-    notes = models.TextField(blank=True, null=True)
+    needed_before = models.DateTimeField()
+    urgency = models.TextField()
+    swipes_needed = models.IntegerField()
     status = models.TextField()
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 
     class Meta:
         managed = False
-        db_table = 'public"."offers'
+        db_table = 'public"."requests'
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.owner.username} · {self.meal_type}"
+        return f"{self.requester.username} · {self.need_type}"
