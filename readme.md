@@ -4,7 +4,7 @@ HuskerFresh is a full-stack swipe‑sharing platform built in 24 hours for hacka
 
 ---
 
-## 1. Problem Solved (Score target: 115/115)
+## 1. Problem Solved
 
 | Need | How HuskerFresh Addresses It |
 |------|------------------------------|
@@ -16,7 +16,7 @@ This directly tackles food insecurity on campus—an important, high-impact prob
 
 ---
 
-## 2. Innovation & Technical Highlights (Target: 120/120)
+## 2. Innovation & Technical Highlights
 
 - **Direct Neon integration**: No Django-managed tables. The app manipulates `public.users` and `public.requests` directly, respecting existing schema constraints.
 - **Atomic “Donate 1 Swipe”**: Uses `transaction.atomic()` + `SELECT ... FOR UPDATE` to modify donor, requester, and request rows safely—even across multiple devices.
@@ -25,7 +25,7 @@ This directly tackles food insecurity on campus—an important, high-impact prob
 
 ---
 
-## 3. Difficulty & Scope (Target: 115/115)
+## 3. Difficulty & Scope
 
 Accomplished within a hackathon sprint:
 
@@ -36,7 +36,7 @@ Accomplished within a hackathon sprint:
 
 ---
 
-## 4. Completeness (Target: 115/115)
+## 4. Completeness
 
 - **Core flows**: login, create request, donate, leaderboard, filtered list, stats.
 - **Validation**: urgency levels enforced as integers; donation counts require swipes > 0; progress bars align with outstanding swipes.
@@ -44,7 +44,7 @@ Accomplished within a hackathon sprint:
 
 ---
 
-## 5. Solution Quality (Target: 115/115)
+## 5. Solution Quality
 
 Benefits gained:
 
@@ -56,7 +56,7 @@ The solution is effective and extensible (notifications, analytics, etc. can be 
 
 ---
 
-## 6. Design Practices (Target: 110/110)
+## 6. Design Practices
 
 ### Architecture
 ```
@@ -85,7 +85,7 @@ The solution is effective and extensible (notifications, analytics, etc. can be 
 
 ---
 
-## 7. Project Presentation (Target: 110/110)
+## 7. Project Presentation
 
 Demo flow:
 
