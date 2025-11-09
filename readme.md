@@ -1,7 +1,7 @@
 # HuskerFresh 🍌
 
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Nebraska_Cornhuskers_logo.svg" alt="UNL Logo" width="180">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Nebraska_Cornhuskers_logo.svg" alt="UNL Logo" width="180">
 </p>
 
 HuskerFresh is a full-stack swipe‑sharing platform built in 24 hours for hackathon judging. It connects Huskers who need meal swipes with those who have extra, using Neon Postgres as the live data source. The project demonstrates ambitious scope, thoughtful UX, and production-ready backend practices.
