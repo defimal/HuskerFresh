@@ -1,9 +1,10 @@
 from django.contrib import messages
 from django.db import connection, transaction
-from django.http import Http404
 from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.utils.http import urlencode, url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
+from django.urls import reverse
 
 from .forms import HelpRequestForm, PublicLoginForm
 from .models import HelpRequest, PublicUser
@@ -44,21 +45,16 @@ def _set_session_user(request, user: PublicUser):
     request.session.modified = True
 
 
-def _resolve_requester(request):
-    session_user = _get_session_user(request)
-    if session_user:
-        return session_user
-    preferred = PublicUser.objects.filter(username__iexact="defi").first()
-    if preferred:
-        return preferred
-    user = PublicUser.objects.order_by("created_at").first()
-    if user is None:
-        raise Http404("No user found to assign as requester.")
-    return user
+def _redirect_to_login(request):
+    login_url = reverse("login")
+    query = urlencode({"next": request.get_full_path()})
+    return redirect(f"{login_url}?{query}")
 
 
 def request_list(request):
-    current_user = _resolve_requester(request)
+    current_user = _get_session_user(request)
+    if not current_user:
+        return _redirect_to_login(request)
     requests_qs = list(HelpRequest.objects.select_related("requester").all())
     total_swipes_needed = 0
     open_requests = 0
@@ -101,7 +97,9 @@ def request_list(request):
 
 
 def request_create(request):
-    requester = _resolve_requester(request)
+    requester = _get_session_user(request)
+    if not requester:
+        return _redirect_to_login(request)
 
     if request.method == "POST":
         form = HelpRequestForm(request.POST)
@@ -125,6 +123,7 @@ def login_view(request):
     if _get_session_user(request):
         return redirect("requests_list")
 
+    next_url = request.GET.get("next") or request.POST.get("next")
     form = PublicLoginForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         username = form.cleaned_data["username"]
@@ -133,9 +132,20 @@ def login_view(request):
         if user and user.password == password:
             _set_session_user(request, user)
             messages.success(request, f"Welcome back, {user.username}!")
+            if next_url and url_has_allowed_host_and_scheme(
+                next_url, allowed_hosts={request.get_host()}
+            ):
+                return redirect(next_url)
             return redirect("requests_list")
         form.add_error(None, "Invalid username or password.")
-    return render(request, "auth/login.html", {"form": form})
+    credentials = list(
+        PublicUser.objects.order_by("username").values("username", "password")
+    )
+    return render(
+        request,
+        "auth/login.html",
+        {"form": form, "next": next_url, "credentials": credentials},
+    )
 
 
 def logout_view(request):
@@ -148,7 +158,9 @@ def logout_view(request):
 @require_POST
 def request_donate(request, pk):
     _ensure_swipes_constraint()
-    donor = _resolve_requester(request)
+    donor = _get_session_user(request)
+    if not donor:
+        return _redirect_to_login(request)
     try:
         with transaction.atomic():
             donor_locked = (

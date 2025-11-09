@@ -3,32 +3,45 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<section class="hf-card hf-form-card">
-    <p class="hf-badge">SwipeShare Access</p>
-    <h1>Choose your Husker profile</h1>
-    <p class="hf-muted">Enter one of the usernames from the `public.users` table with the matching plaintext password.</p>
-    <form method="post">
-        {% csrf_token %}
-        {% if form.non_field_errors %}
-            <div class="hf-alert hf-alert-danger">
-                {% for error in form.non_field_errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% for field in form %}
-            <div>
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% for error in field.errors %}
-                    <div class="hf-alert hf-alert-danger">{{ error }}</div>
-                {% endfor %}
-            </div>
-        {% endfor %}
-        <div class="hf-actions">
-            <button type="submit">Enter Dashboard</button>
-            <a href="{% url 'requests_list' %}" class="hf-pill" style="text-align:center;">Back</a>
-        </div>
-    </form>
+<section class="hf-cover">
+    <div class="hf-cover-hero">
+        <p class="hf-badge">SwipeShare Access</p>
+        <h1>Sign in to unlock the HuskerFresh dashboard.</h1>
+        <p class="hf-muted">
+            Every action inside HuskerFresh is tied to a Husker identity. Log in with any profile from the
+            <code>public.users</code> table, donate your spare swipes, and keep track of the leaderboard.
+        </p>
+        <ul class="hf-cover-facts">
+            <li>Only authenticated Huskers can browse or donate.</li>
+            <li>Passwords are demo-friendly and stored in plaintext.</li>
+            <li>Your session stays active until you choose to log out.</li>
+        </ul>
+    </div>
+    <div class="hf-cover-panel">
+        <form method="post" class="hf-cover-form">
+            {% csrf_token %}
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+            {% if form.non_field_errors %}
+                <div class="hf-alert hf-alert-danger">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% for field in form %}
+                <div class="hf-form-field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <div class="hf-alert hf-alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="hf-cover-submit">Enter Dashboard</button>
+        </form>
+        
+    </div>
 </section>
 {% endblock %}
