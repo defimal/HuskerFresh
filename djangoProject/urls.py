@@ -18,8 +18,12 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
 
+from core.views import login_view, logout_view
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
     path('requests/', include('core.urls')),
     path('', RedirectView.as_view(pattern_name='requests_list', permanent=False)),
 ]

@@ -22,5 +22,22 @@ class HelpRequestForm(forms.ModelForm):
             "swipes_needed",
         )
         widgets = {
-            "description": forms.Textarea(attrs={"rows": 4}),
+            "need_type": forms.TextInput(attrs={"placeholder": "E.g. Late lunch, Study session"}),
+            "description": forms.Textarea(attrs={"rows": 4, "placeholder": "Share context and meetup details"}),
+            "campus_zone": forms.TextInput(attrs={"placeholder": "Nebraska Union"}),
+            "urgency": forms.TextInput(attrs={"placeholder": "High / Medium / Low"}),
+            "swipes_needed": forms.NumberInput(attrs={"min": 1}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            classes = field.widget.attrs.get("class", "")
+            field.widget.attrs["class"] = (classes + " hf-input").strip()
+
+
+class PublicLoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Enter username", "class": "hf-input"}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Enter password", "class": "hf-input"})
+    )

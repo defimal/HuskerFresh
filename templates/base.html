@@ -1,25 +1,38 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>{% block title %}HuskerFresh{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <script defer src="{% static 'js/app.js' %}"></script>
 </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'requests_list' %}">HuskerFresh</a>
-        <div class="navbar-nav">
-            <a class="nav-link" href="{% url 'requests_list' %}">Requests</a>
-            <a class="nav-link" href="{% url 'requests_add' %}">New Request</a>
-        </div>
+<body class="hf-body">
+<div class="hf-gradient"></div>
+<header class="hf-header">
+    <div class="hf-nav container">
+        <a class="hf-logo" href="{% url 'requests_list' %}">HuskerFresh</a>
+        <nav class="hf-nav-links">
+            <a href="{% url 'requests_list' %}">Dashboard</a>
+            <a href="{% url 'requests_add' %}">New Request</a>
+            {% if request.session.public_user_username %}
+                <span class="hf-user-chip">Hi, {{ request.session.public_user_username }}</span>
+                <a href="{% url 'logout' %}" class="hf-pill">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="hf-pill">Login</a>
+            {% endif %}
+        </nav>
     </div>
-</nav>
-<main class="container">
+</header>
+<main class="hf-main container">
     {% if messages %}
-        <div class="mb-3">
+        <div class="hf-flash">
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags|default:'info' }} mb-2">
+                <div class="hf-alert hf-alert-{{ message.tags|default:'info' }}">
                     {{ message }}
                 </div>
             {% endfor %}
@@ -27,5 +40,10 @@
     {% endif %}
     {% block content %}{% endblock %}
 </main>
+<footer class="hf-footer">
+    <div class="container">
+        <p>Built for the HuskerFresh Swipe Share experience &middot; {% now "Y" %}</p>
+    </div>
+</footer>
 </body>
 </html>

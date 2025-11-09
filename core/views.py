@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from .forms import HelpRequestForm
+from .forms import HelpRequestForm, PublicLoginForm
 from .models import HelpRequest, PublicUser
 
 _swipe_constraint_checked = False
@@ -31,15 +31,27 @@ def _ensure_swipes_constraint():
     _swipe_constraint_checked = True
 
 
+def _get_session_user(request):
+    user_id = request.session.get("public_user_id")
+    if not user_id:
+        return None
+    return PublicUser.objects.filter(pk=user_id).first()
+
+
+def _set_session_user(request, user: PublicUser):
+    request.session["public_user_id"] = user.pk
+    request.session["public_user_username"] = user.username
+    request.session.modified = True
+
+
 def _resolve_requester(request):
+    session_user = _get_session_user(request)
+    if session_user:
+        return session_user
     preferred = PublicUser.objects.filter(username__iexact="defi").first()
     if preferred:
         return preferred
-    user = None
-    if getattr(request, "user", None) and request.user.is_authenticated:
-        user = PublicUser.objects.filter(username__iexact=request.user.username).first()
-    if user is None:
-        user = PublicUser.objects.order_by("created_at").first()
+    user = PublicUser.objects.order_by("created_at").first()
     if user is None:
         raise Http404("No user found to assign as requester.")
     return user
@@ -48,11 +60,21 @@ def _resolve_requester(request):
 def request_list(request):
     current_user = _resolve_requester(request)
     requests_qs = list(HelpRequest.objects.select_related("requester").all())
+    total_swipes_needed = 0
+    open_requests = 0
     for req in requests_qs:
         req.disable_donate = True
+        remaining = max(0, req.swipes_needed)
+        total_swipes_needed += remaining
+        if str(req.status).lower() != "matched" and remaining > 0:
+            open_requests += 1
+        if remaining == 0 or str(req.status).lower() == "matched":
+            req.progress_pct = 100
+        else:
+            req.progress_pct = max(12, 100 - min(remaining, 10) * 8)
         if current_user:
             req.disable_donate = (
-                req.swipes_needed <= 0
+                remaining <= 0
                 or current_user.meal_swipes <= 0
                 or req.requester_id == current_user.id
             )
@@ -68,6 +90,12 @@ def request_list(request):
             "requests": requests_qs,
             "current_user": current_user,
             "leaderboard": leaderboard,
+            "stats": {
+                "total_requests": len(requests_qs),
+                "open_requests": open_requests,
+                "swipes_needed": total_swipes_needed,
+                "donor_swipes": current_user.meal_swipes if current_user else 0,
+            },
         },
     )
 
@@ -91,6 +119,30 @@ def request_create(request):
         form = HelpRequestForm()
 
     return render(request, "requests/add.html", {"form": form})
+
+
+def login_view(request):
+    if _get_session_user(request):
+        return redirect("requests_list")
+
+    form = PublicLoginForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password"]
+        user = PublicUser.objects.filter(username__iexact=username).first()
+        if user and user.password == password:
+            _set_session_user(request, user)
+            messages.success(request, f"Welcome back, {user.username}!")
+            return redirect("requests_list")
+        form.add_error(None, "Invalid username or password.")
+    return render(request, "auth/login.html", {"form": form})
+
+
+def logout_view(request):
+    request.session.pop("public_user_id", None)
+    request.session.pop("public_user_username", None)
+    messages.info(request, "You have been logged out.")
+    return redirect("login")
 
 
 @require_POST
