@@ -154,6 +154,21 @@ This ensures no race conditions, even if multiple donors try to help simultaneou
 
 ---
 
+## 10.5. Try-It-Yourself Logins
+
+Visit `http://127.0.0.1:8001/login/` and sign in with any row from `public.users`. For convenience, the following accounts already exist in Neon (plaintext passwords for demo purposes):
+
+| Username | Password | Notes |
+|----------|----------|-------|
+| `defi`   | `password123` | Default donor used throughout testing |
+| `maverick` | `TopGun123` | Has 5 swipes, 3 donation points |
+| `scarlet`  | `GoBigRed!` | Marching band student, 7 swipes |
+| `lincoln`  | `RailSplitters!` | Community organizer, 2 swipes |
+
+Feel free to add more rows directly in Neon—no Django migrations required.
+
+---
+
 ## 11. Summary
 
 HuskerFresh checks each judging box with a compelling story, robust execution, and delightful presentation—proof that a focused team can change campus life in a single weekend. 🍌
